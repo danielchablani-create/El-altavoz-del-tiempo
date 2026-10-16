@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#173c32"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="description" content="Crea tus vinilos, coloca la aguja y adivina canción, artista y año. Un viaje musical para jugar con tus recuerdos."><title>El altavoz del tiempo</title><link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="manifest" href="manifest.webmanifest"><link rel="stylesheet" href="styles.css?v=14">
+</head>
+<body>
+<main id="app">
+<section id="homeScreen" class="screen home active" aria-labelledby="homeTitle">
+  <p class="brandline"><span>UNA CANCIÓN. MIL RECUERDOS.</span></p>
+  <h1 id="homeTitle" class="brand-title">El altavoz<br>del <em>tiempo.</em></h1>
+  <div class="home-hero"><img src="assets/gramophone.webp" alt="Gramófono vintage de madera con bocina dorada" fetchpriority="high" width="1024" height="1024"></div>
+  <div class="home-questions"><p>¿Reconoces la canción?</p><p>¿Quién es el artista?</p><p>¿Recuerdas el año?</p></div>
+  <p class="tagline">Un viaje musical para jugar con tus recuerdos.</p>
+  <button id="enterLibrary" class="primary wide">ENTRAR EN LA BIBLIOTECA <span aria-hidden="true">→</span></button>
+  <button id="resumeGame" class="text-button hidden">Continuar la última canción ↗</button>
+  <p class="footnote">2–6 jugadores</p>
+</section>
+<section id="libraryScreen" class="screen" aria-labelledby="libraryTitle" hidden>
+  <header class="page-header"><button class="back" data-go="homeScreen" aria-label="Volver a la presentación">←</button><p class="brandline">EL ALTAVOZ DEL TIEMPO</p><span class="header-spacer"></span></header>
+  <div class="title-row"><h1 id="libraryTitle">Tu biblioteca</h1><span id="albumCount" class="count">0 vinilos</span></div>
+  <p class="crate-tagline">Tus canciones, tus recuerdos.</p>
+  <p class="small muted center">Descarga la plantilla CSV y crea tu colección.</p>
+  <div class="library-actions"><a class="secondary" href="plantilla-canciones.csv" download>↓ Descargar CSV</a><button id="createAlbum" class="primary">＋ Crear vinilo</button></div>
+  <fieldset class="round-choice"><legend>¿Cuántas rondas jugamos?</legend><div class="round-presets"><button type="button" data-rounds="5" aria-pressed="false">5</button><button type="button" data-rounds="10" aria-pressed="true" class="selected">10</button><button type="button" data-rounds="15" aria-pressed="false">15</button><button type="button" data-rounds="20" aria-pressed="false">20</button><label for="roundsInput">Otra cantidad<input id="roundsInput" type="number" min="1" max="100" step="1" inputmode="numeric" value="10" aria-describedby="roundsHelp"></label></div><p id="roundsHelp">Una canción por ronda · De 1 a 100 rondas.</p><p id="roundsError" class="rounds-error hidden" role="alert"></p></fieldset>
+  <div id="crateStage" class="crate-stage" role="group" aria-label="Caja de vinilos: desliza para hojear y arrastra hacia arriba para elegir">
+    <img class="crate-back" src="assets/crate.webp" alt="Caja de madera para guardar tus vinilos" width="1024" height="1024">
+    <div id="crateCards" class="crate-cards"></div>
+    <img class="crate-front" src="assets/crate.webp" alt="" aria-hidden="true" width="1024" height="1024">
+    <div id="crateEmpty" class="crate-empty"><span aria-hidden="true">◎</span><p>Aquí empieza tu colección.</p><small>Crea tu primer vinilo con un CSV.</small></div>
+  </div>
+  <div id="crateSelection" class="crate-selection hidden"><h2 id="crateAlbumName"></h2><p id="crateAlbumPosition" class="muted small" role="status" aria-live="polite"></p>
+    <div class="crate-browse"><button id="previousAlbum" class="secondary" aria-label="Vinilo anterior">← Anterior</button><span aria-hidden="true">↔</span><button id="followingAlbum" class="secondary" aria-label="Vinilo siguiente">Siguiente →</button></div>
+    <p class="small muted">Desliza a los lados para hojear las fundas.<br>Tira hacia arriba para escuchar el vinilo elegido.</p><button id="listenAlbum" class="primary wide">ESCUCHAR ESTE VINILO →</button>
+  </div>
+  <div id="libraryTools" class="library-tools hidden"><label for="exportSelect">Copia de canciones (CSV, sin la portada)</label><div><select id="exportSelect" aria-label="Vinilo para exportar"></select><button id="exportAlbum" class="secondary">↓ CSV</button><button id="editCover" class="secondary">✎ Portada</button><button id="extendAlbum" class="secondary" title="Añadir canciones al vinilo elegido">＋ Canciones</button></div></div>
+  <div class="library-delete"><button id="deleteLibrary" class="delete-library-button" type="button">Borrar todos los vinilos</button></div>
+  <p class="footnote">Tus vinilos se guardan en este navegador.<br>Expórtalos para conservar una copia o llevarlos a otro dispositivo.</p>
+</section>
+<section id="createScreen" class="screen" aria-labelledby="createTitle" hidden>
+  <header class="page-header"><button class="back" data-go="libraryScreen" aria-label="Volver a la biblioteca">←</button><p class="brandline">EL ALTAVOZ DEL TIEMPO</p><span class="header-spacer"></span></header>
+  <h1 id="createTitle">Crear vinilo</h1><p class="subtitle">Dale nombre a tus recuerdos.</p>
+  <div class="creation-top"><div class="name-field"><label for="albumName">Nombre del vinilo</label><input id="albumName" maxlength="70" placeholder="Los veranos de nuestra vida" autocomplete="off"><p id="appendNote" class="muted small hidden"></p></div><div id="coverPreview" class="cover-preview" aria-hidden="true"><img id="coverImage" class="hidden" alt=""><div class="cover-sun"></div><span id="coverName">TU PRÓXIMO RECUERDO</span></div></div>
+  <div class="cover-editor"><label class="cover-upload" for="coverFile">▧ Elegir imagen de portada<input id="coverFile" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"></label><button id="removeCover" type="button" class="text-button hidden">Quitar imagen</button><p id="coverStatus" class="small muted" role="status" aria-live="polite">Opcional: JPG, PNG o WebP, hasta 8 MB. Se ajustará al centro de una portada cuadrada y se guardará solo en este navegador.</p></div>
+  <label class="field-label" for="csvFile">Archivo de canciones</label>
+  <label class="upload-zone" for="csvFile"><span class="plus-circle" aria-hidden="true">＋</span><strong id="uploadName">Seleccionar archivo CSV</strong><small>Una fila por canción · máximo 5 MB y 3.000 canciones</small><input type="file" id="csvFile" accept=".csv,text/csv"></label>
+  <p class="format-note"><strong>Título · Artista · Año · YouTube</strong><br>Inicio es opcional: usa segundos o minutos:segundos. <a href="plantilla-canciones.csv" download>Descargar plantilla</a></p>
+  <p id="importStatus" class="import-status" role="status" aria-live="polite">Elige tu CSV para revisar las canciones antes de guardar.</p>
+  <div id="previewWrap" class="preview-wrap hidden"><table><caption>Revisión de canciones</caption><thead><tr><th>Fila</th><th>Canción / artista</th><th>Año</th><th>Revisión</th></tr></thead><tbody id="previewBody"></tbody></table></div><p id="previewNote" class="muted small"></p>
+  <button id="saveAlbum" class="primary wide" disabled>GUARDAR VINILO</button>
+  <p class="footnote">Tu vinilo aparecerá dentro de la caja de tu biblioteca.<br>La disponibilidad de YouTube se comprueba al reproducir.</p>
+</section>
+<section id="gameScreen" class="screen game" aria-labelledby="gameTitle" hidden>
+  <header class="page-header"><button id="gameBack" class="back" aria-label="Volver a la biblioteca">←</button><p class="brandline">EL ALTAVOZ DEL TIEMPO</p><button id="openPlayers" class="round-badge" aria-label="Abrir jugadores y marcador">RONDA<strong><span id="roundNumber">1</span><small id="roundTotal">/ 10</small></strong></button></header>
+  <h1 id="gameTitle" class="center">Que suenen<br>los <em>recuerdos.</em></h1>
+  <p class="section-label">VINILO ELEGIDO</p><h2 id="chosenName" class="chosen-name"></h2>
+  <div id="gramophone" class="gramophone">
+    <img class="gramophone-base" src="assets/gramophone.webp" alt="Gramófono con una aguja que puedes desplazar sobre el vinilo" width="1024" height="1024">
+    <img class="gramophone-aerial" src="assets/gramophone-aerial.webp" alt="" aria-hidden="true" width="1024" height="1024">
+    <div class="record-plane" aria-hidden="true"><div id="spinningRecord" class="spinning-record"><div class="vinyl-label"><span id="recordName"></span></div><i></i></div></div>
+    <button id="needle" class="needle" aria-label="Colocar la aguja sobre el disco para escuchar" aria-pressed="false" aria-describedby="needleInstructions"><svg viewBox="0 0 80 300" aria-hidden="true"><defs><linearGradient id="metal"><stop stop-color="#181b19"/><stop offset=".4" stop-color="#646d60"/><stop offset=".55" stop-color="#282e28"/><stop offset="1" stop-color="#080e0a"/></linearGradient></defs><rect x="22" y="0" width="36" height="35" rx="7" fill="#252a25"/><circle cx="40" cy="44" r="26" fill="#1a201b" stroke="#898878" stroke-width="2"/><circle cx="40" cy="44" r="13" fill="url(#metal)"/><path d="M40 44v158q0 26-20 40" fill="none" stroke="#090f0c" stroke-width="16"/><path d="M40 44v158q0 26-20 40" fill="none" stroke="url(#metal)" stroke-width="12"/><rect x="8" y="235" width="28" height="39" rx="5" fill="#141b15" transform="rotate(22 22 253)"/><path d="M14 272l-3 12" stroke="#d4af62" stroke-width="4"/></svg></button>
+    <div class="gramophone-hardware" aria-label="Controles del gramófono">
+      <button id="hardwareBack" class="hardware-button hardware-back" type="button" data-seek="-10" aria-label="Retroceder 10 segundos" title="Retroceder 10 segundos"><span aria-hidden="true">≪</span></button>
+      <button id="hardwarePlay" class="hardware-button hardware-play" type="button" data-toggle-audio aria-label="Reproducir y colocar la aguja" title="Reproducir y colocar la aguja" aria-pressed="false"><span aria-hidden="true">▷Ⅱ</span></button>
+      <button id="hardwareForward" class="hardware-button hardware-forward" type="button" data-seek="10" aria-label="Avanzar 10 segundos" title="Avanzar 10 segundos"><span aria-hidden="true">≫</span></button>
+      <div id="volumeKnob" class="volume-knob" role="slider" tabindex="0" aria-orientation="vertical" aria-label="Volumen del gramófono" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" aria-valuetext="100 por ciento" title="Arrastra arriba o abajo para ajustar el volumen"><i aria-hidden="true"></i></div>
+    </div>
+  </div>
+  <p id="needleInstructions" class="needle-instructions">↖ Desplaza la aguja hasta el disco para escuchar.</p>
+  <p id="playbackStatus" class="playback-status" role="status" aria-live="polite">Coloca la aguja para escuchar.</p>
+  <div class="guess-prompts"><span>¿La canción?</span><span>¿El artista?</span><span>¿El año?</span></div>
+  <button id="revealAnswer" class="reveal-button"><span aria-hidden="true">?</span> Revelar respuesta</button>
+  <p class="small muted center">Una canción al azar de tu vinilo. La respuesta se mantiene oculta.</p><p class="footnote">Retira la aguja para pausar. También puedes tocarla.</p>
+  <details id="audioControls" class="audio-controls"><summary>Controles de sonido <span id="volumeValue">100 %</span></summary><div class="audio-control-row"><button type="button" class="secondary" data-seek="-10" aria-label="Retroceder 10 segundos">≪ 10 s</button><button type="button" class="secondary" data-toggle-audio aria-pressed="false">Reproducir</button><button type="button" class="secondary" data-seek="10" aria-label="Avanzar 10 segundos">10 s ≫</button><label for="volumeRange">Volumen<input id="volumeRange" type="range" min="0" max="100" step="1" value="100"></label></div><p class="small muted">También puedes usar los botones y la rueda del propio gramófono.</p></details>
+  <button id="playersLink" class="text-button">Jugadores y marcador ↗</button>
+</section>
+<section id="answerScreen" class="screen answer" aria-labelledby="answerHeading" hidden>
+  <header class="page-header"><button id="answerBack" class="back" aria-label="Volver al gramófono">←</button><p class="brandline">EL ALTAVOZ DEL TIEMPO</p><span class="round-badge">RONDA<strong><span id="answerRound">1</span><small id="answerRoundTotal">/ 10</small></strong></span></header>
+  <h1 id="answerHeading" class="center">¡Así <em>sonaba!</em></h1><p class="section-label">LA RESPUESTA</p>
+  <dl class="answers"><div><dt>CANCIÓN</dt><dd id="answerSong"></dd></div><div><dt>ARTISTA</dt><dd id="answerArtist"></dd></div><div><dt>AÑO</dt><dd id="answerYear"></dd></div></dl>
+  <div class="vintage-tv"><img src="assets/tv.webp" alt="Televisión antigua de madera con el vídeo de la canción en su pantalla" width="1024" height="1024"><div id="tvWindow" class="tv-window" aria-label="Pantalla del vídeo"></div></div>
+  <p id="videoStatus" class="playback-status" role="status" aria-live="polite">Ahora sí: imagen y sonido.</p><button id="retryVideo" class="secondary hidden">Activar sonido y vídeo</button>
+  <div class="celebration"><h2>¿Quién lo había acertado?</h2><p>Canción, artista o año: celebrad cada acierto.</p><div class="award-buttons"><button data-award="song">♫ Canción</button><button data-award="artist">♬ Artista</button><button data-award="year">◷ Año</button></div></div>
+  <button id="nextSong" class="primary wide">SIGUIENTE CANCIÓN <span aria-hidden="true">→</span></button><p class="footnote">Una nueva canción del mismo vinilo.</p>
+</section>
+</main>
+<!-- Un único reproductor conserva la reproducción al pasar del gramófono a la TV. -->
+<div id="mediaHost" class="media-host concealed" aria-hidden="true"><div id="youtubePlayer"></div></div>
+<dialog id="deleteLibraryDialog" aria-labelledby="deleteLibraryTitle"><h2 id="deleteLibraryTitle">¿Borrar todos los vinilos?</h2><p id="deleteLibraryCount"></p><p class="small muted">Se eliminarán las canciones, las portadas y la partida guardada de este navegador. No se puede deshacer.</p><p id="deleteLibraryError" class="delete-error" role="alert"></p><div class="dialog-actions"><form method="dialog"><button class="secondary" type="submit">CANCELAR</button></form><button id="confirmDeleteLibrary" class="primary delete-confirm" type="button">BORRAR TODOS</button></div></dialog>
+<dialog id="resultsDialog" aria-labelledby="resultsTitle"><form method="dialog"><button class="dialog-close" aria-label="Cerrar resultados">×</button></form><p class="section-label">LOS RECUERDOS SE COMPARTEN</p><h2 id="resultsTitle">¡Una gran sesión!</h2><p id="resultsSummary" class="results-summary"></p><div id="resultsScores"></div><div class="dialog-actions"><button id="playAgain" class="primary">JUGAR OTRA VEZ</button><button id="resultsLibrary" class="secondary">ELEGIR OTRO VINILO</button></div></dialog>
+<dialog id="playersDialog"><form method="dialog"><button class="dialog-close" aria-label="Cerrar">×</button></form><p class="section-label">COMPARTID LOS RECUERDOS</p><h2>Jugadores y marcador</h2><p class="muted small">Podéis jugar sin registrar puntos o repartir una ficha por cada acierto.</p><div id="playerRows"></div><div class="dialog-actions"><button id="addPlayer" class="secondary">＋ Jugador</button><button id="savePlayers" class="primary">GUARDAR NOMBRES</button></div><p id="playerMessage" role="status" class="small"></p></dialog>
+<dialog id="awardDialog"><form method="dialog"><button class="dialog-close" aria-label="Cerrar">×</button></form><p class="section-label">UNA FICHA POR ACIERTO</p><h2 id="awardHeading">¿Quién acertó?</h2><div id="awardPlayers"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="catalog.js?v=6"></script><script src="engine.js?v=14"></script><script src="app.js?v=14"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "El altavoz del tiempo",
+  "short_name": "Altavoz",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f0df",
+  "theme_color": "#173c32",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "orientation": "landscape"
+}
